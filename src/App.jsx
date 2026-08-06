@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, ChevronRight, MapPin, Zap, Code, Heart, Briefcase, Users, TrendingUp, Mail, Phone, Download, Star, Server, Database, CheckCircle, Calendar, Rocket } from 'lucide-react';
+import Charu_ProfilePic from "../src/assets/Charu_ProfilePic.jpg";
 
 // lucide-react no longer ships brand/logo icons (Github, Linkedin, etc.)
 // Simple inline SVGs used instead so nothing breaks.
@@ -182,7 +183,7 @@ const HeroSection = () => {
               <div className="absolute inset-0 rounded-full blur-3xl opacity-50 animate-pulse" style={{ background: COLORS.GRADIENT_PRIMARY }} />
               <div className="relative w-80 h-80 rounded-full p-1" style={{ background: COLORS.GRADIENT_PRIMARY }}>
                 <img
-                  src="https://i.pravatar.cc/400?img=47"
+                  src={Charu_ProfilePic}
                   alt="Charulatha - Profile"
                   className="w-full h-full rounded-full object-cover"
                   style={{ backgroundColor: COLORS.BG_DARK }}
