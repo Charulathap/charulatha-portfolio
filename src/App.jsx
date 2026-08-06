@@ -135,7 +135,7 @@ const HeroSection = () => {
     { icon: <Briefcase />, value: '7', label: 'Major Projects' },
     { icon: <Code />, value: '15+', label: 'Technologies' },
     { icon: <Users />, value: '100%', label: 'Client Satisfaction' },
-    { icon: <TrendingUp />, value: '2+', label: 'Years Experience' }
+    { icon: <TrendingUp />, value: '2.5+', label: 'Years Experience' }
   ];
 
   return (
