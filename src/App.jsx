@@ -680,7 +680,7 @@ const ExperienceSection = () => {
 
 const ContactSection = () => {
   const contactMethods = [
-    { icon: <Mail size={24} />, label: 'Email', value: 'charulatha0229@gmail.com', color: COLORS.PRIMARY, href: 'mailto:charulatha0229@gmail.com' },
+    { icon: <Mail size={24} />, label: 'Email', value: 'charulathap09@gmail.com', color: COLORS.PRIMARY, href: 'mailto:charulathap09@gmail.com' },
     { icon: <Phone size={24} />, label: 'Phone', value: '+91 86752 04168', color: COLORS.SECONDARY, href: 'tel:+918675204168' },
     { icon: <MapPin size={24} />, label: 'Location', value: 'Coimbatore, TN', color: COLORS.ACCENT_CYAN, href: null }
   ];
@@ -710,7 +710,7 @@ const ContactSection = () => {
           <div className="flex justify-center space-x-4 mb-10">
             <a href="https://github.com/" target="_blank" rel="noopener noreferrer" className="p-4 border rounded-xl transition-all hover:scale-110" style={{ backgroundColor: COLORS.BG_HOVER, borderColor: COLORS.BORDER_DEFAULT }}><GithubIcon /></a>
             <a href="https://www.linkedin.com/in/charulatha-p-87258236a/" target="_blank" rel="noopener noreferrer" className="p-4 border rounded-xl transition-all hover:scale-110" style={{ backgroundColor: COLORS.BG_HOVER, borderColor: COLORS.BORDER_DEFAULT }}><LinkedinIcon /></a>
-            <a href="mailto:charulatha0229@gmail.com" className="p-4 border rounded-xl transition-all hover:scale-110" style={{ backgroundColor: COLORS.BG_HOVER, borderColor: COLORS.BORDER_DEFAULT }}><Mail /></a>
+            <a href="mailto:charulathap09@gmail.com" className="p-4 border rounded-xl transition-all hover:scale-110" style={{ backgroundColor: COLORS.BG_HOVER, borderColor: COLORS.BORDER_DEFAULT }}><Mail /></a>
           </div>
           {/* <div className="flex justify-center">
             <button className="px-10 py-4 rounded-full font-bold text-lg transition-all hover:scale-105 flex items-center justify-center space-x-2" style={{ background: COLORS.GRADIENT_PRIMARY }}><span>Download Resume</span><Download size={20} /></button>
