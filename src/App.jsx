@@ -1,21 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, ChevronRight, MapPin, Zap, Code, Heart, Briefcase, Users, TrendingUp, Mail, Phone, Download, Star, Server, Database, CheckCircle, Calendar, Rocket } from 'lucide-react';
-import Charu_ProfilePic from "../src/assets/Charu_ProfilePic.jpg";
-
-// lucide-react no longer ships brand/logo icons (Github, Linkedin, etc.)
-// Simple inline SVGs used instead so nothing breaks.
-const GithubIcon = (props) => (
-  <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" {...props}>
-    <path d="M12 .5C5.73.5.5 5.73.5 12c0 5.09 3.29 9.4 7.86 10.93.57.1.78-.25.78-.55 0-.27-.01-1.17-.02-2.12-3.2.7-3.88-1.36-3.88-1.36-.52-1.34-1.28-1.7-1.28-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.64 1.59.24 2.76.12 3.05.74.8 1.19 1.83 1.19 3.09 0 4.42-2.7 5.4-5.26 5.68.41.36.78 1.08.78 2.17 0 1.57-.01 2.83-.01 3.22 0 .3.2.66.79.55A10.52 10.52 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5Z" />
-  </svg>
-);
-
-const LinkedinIcon = (props) => (
-  <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" {...props}>
-    <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12ZM7.12 20.45H3.56V9h3.56v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z" />
-  </svg>
-);
-
+import Charu_Profile from "../src/assets/Charu_ProfilePic.png";
+import Charulatha_CV from "./Resume/Charulatha_CV.pdf";
 
 const COLORS = {
   PRIMARY: '#a855f7',
@@ -40,6 +26,101 @@ const COLORS = {
   GRADIENT_PURPLE_PINK: 'linear-gradient(to right, #c084fc, #f472b6, #c084fc)',
   GRADIENT_GREEN: 'linear-gradient(to right, #10b981, #059669)',
 };
+
+// Reusable Scroll Reveal Animation component
+const ScrollReveal = ({ children, delay = 0, direction = 'up' }) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = React.useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      { threshold: 0.05, rootMargin: '0px 0px -20px 0px' }
+    );
+
+    const currentRef = ref.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, []);
+
+  const getDirectionClass = () => {
+    switch (direction) {
+      case 'up': return 'translate-y-10';
+      case 'down': return '-translate-y-10';
+      case 'left': return 'translate-x-10';
+      case 'right': return '-translate-x-10';
+      case 'none': return '';
+      default: return 'translate-y-10';
+    }
+  };
+
+  return (
+    <div
+      ref={ref}
+      className={`transition-all duration-[800ms] ease-out transform ${
+        isVisible ? 'opacity-100 translate-y-0 translate-x-0 scale-100' : `opacity-0 ${getDirectionClass()} scale-95`
+      }`}
+      style={{ transitionDelay: `${delay}ms` }}
+    >
+      {children}
+    </div>
+  );
+};
+
+// Sleek scroll-to-top component
+const ScrollToTop = () => {
+  const [showButton, setShowButton] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowButton(window.scrollY > 500);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  return (
+    <button
+      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      className={`fixed bottom-8 right-8 z-50 p-4 rounded-full border shadow-2xl transition-all duration-300 transform active:scale-90 cursor-pointer ${
+        showButton ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-4 scale-75 pointer-events-none'
+      }`}
+      style={{
+        background: COLORS.GRADIENT_PRIMARY,
+        borderColor: COLORS.PRIMARY,
+        boxShadow: `0 0 20px ${COLORS.PRIMARY}44`
+      }}
+    >
+      <ChevronRight size={20} className="-rotate-90 text-white" />
+    </button>
+  );
+};
+
+// lucide-react no longer ships brand/logo icons (Github, Linkedin, etc.)
+// Simple inline SVGs used instead so nothing breaks.
+const GithubIcon = (props) => (
+  <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" {...props}>
+    <path d="M12 .5C5.73.5.5 5.73.5 12c0 5.09 3.29 9.4 7.86 10.93.57.1.78-.25.78-.55 0-.27-.01-1.17-.02-2.12-3.2.7-3.88-1.36-3.88-1.36-.52-1.34-1.28-1.7-1.28-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.64 1.59.24 2.76.12 3.05.74.8 1.19 1.83 1.19 3.09 0 4.42-2.7 5.4-5.26 5.68.41.36.78 1.08.78 2.17 0 1.57-.01 2.83-.01 3.22 0 .3.2.66.79.55A10.52 10.52 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5Z" />
+  </svg>
+);
+
+const LinkedinIcon = (props) => (
+  <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" {...props}>
+    <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12ZM7.12 20.45H3.56V9h3.56v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z" />
+  </svg>
+);
+
+
+
 
 const SECTION_IDS = ['home', 'about', 'skills', 'projects', 'experience', 'contact'];
 
@@ -142,73 +223,90 @@ const HeroSection = () => {
     <section id="home" className="relative min-h-screen flex items-center justify-center px-6 pt-24 pb-12">
       <div className="max-w-7xl mx-auto w-full relative z-10">
         <div className="grid lg:grid-cols-2 gap-10 items-center">
-          <div>
-            <div className="inline-flex items-center space-x-2 rounded-full px-6 py-3 mb-6" style={{ backgroundColor: `${COLORS.PRIMARY}1A`, borderWidth: '1px', borderColor: COLORS.BORDER_PURPLE }}>
-              <div className="w-2 h-2 rounded-full animate-ping" style={{ backgroundColor: COLORS.STATUS_SUCCESS }} />
-              <span className="text-sm font-semibold">Available for Opportunities</span>
-            </div>
-            <h1 className="text-5xl md:text-7xl font-black mb-4 leading-tight">
-              <span>Hi, I'm </span>
-              <span className="bg-clip-text text-transparent" style={{ backgroundImage: COLORS.GRADIENT_PURPLE_PINK }}>Charulatha</span>
-            </h1>
-            <div className="text-2xl md:text-3xl font-bold mb-4" style={{ color: COLORS.TEXT_SECONDARY }}>Full Stack Developer</div>
-            <p className="text-lg mb-3" style={{ color: COLORS.TEXT_SECONDARY }}>React.js • React Native • Node.js • FastAPI</p>
-            <p className="mb-6 leading-relaxed max-w-2xl" style={{ color: COLORS.TEXT_SECONDARY }}>
-              I build end-to-end web and mobile applications with clean UI, scalable architecture, and real-world business workflows.
-            </p>
-            <div className="flex flex-wrap gap-4 mb-6">
-              <button
-                onClick={() => scrollToSection('projects')}
-                className="group px-8 py-4 rounded-full font-semibold flex items-center space-x-2 transition-all hover:scale-105"
-                style={{ background: COLORS.GRADIENT_PRIMARY, boxShadow: `0 10px 40px ${COLORS.PRIMARY}50` }}
-              >
-                <span>View My Work</span>
-                <ChevronRight className="group-hover:translate-x-1 transition-transform" size={20} />
-              </button>
-              <button
-                onClick={() => scrollToSection('contact')}
-                className="px-8 py-4 rounded-full font-semibold border-2 transition-all hover:scale-105"
-                style={{ borderColor: COLORS.PRIMARY }}
-              >
-                Get In Touch
-              </button>
-            </div>
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div className="flex items-center space-x-2"><MapPin size={16} style={{ color: COLORS.PRIMARY }} /><span style={{ color: COLORS.TEXT_SECONDARY }}>Coimbatore, TN</span></div>
-              <div className="flex items-center space-x-2"><Zap size={16} style={{ color: COLORS.PRIMARY }} /><span style={{ color: COLORS.TEXT_SECONDARY }}>Open to Relocate</span></div>
-            </div>
-          </div>
-          <div className="relative hidden lg:flex justify-center">
-            <div className="relative">
-              <div className="absolute inset-0 rounded-full blur-3xl opacity-50 animate-pulse" style={{ background: COLORS.GRADIENT_PRIMARY }} />
-              <div className="relative w-80 h-80 rounded-full p-1" style={{ background: COLORS.GRADIENT_PRIMARY }}>
-                <img
-                  src={Charu_ProfilePic}
-                  alt="Charulatha - Profile"
-                  className="w-full h-full rounded-full object-cover"
-                  style={{ backgroundColor: COLORS.BG_DARK }}
-                />
+          <ScrollReveal direction="left">
+            <div>
+              <div className="inline-flex items-center space-x-2 rounded-full px-6 py-3 mb-6" style={{ backgroundColor: `${COLORS.PRIMARY}1A`, borderWidth: '1px', borderColor: COLORS.BORDER_PURPLE }}>
+                <div className="w-2 h-2 rounded-full animate-ping" style={{ backgroundColor: COLORS.STATUS_SUCCESS }} />
+                <span className="text-sm font-semibold">Available for Opportunities</span>
+              </div>
+              <h1 className="text-5xl md:text-7xl font-black mb-4 leading-tight">
+                <span>Hi, I'm </span>
+                <span className="bg-clip-text text-transparent animate-pulse" style={{ backgroundImage: COLORS.GRADIENT_PURPLE_PINK }}>Charulatha</span>
+              </h1>
+              <div className="text-2xl md:text-3xl font-bold mb-4" style={{ color: COLORS.TEXT_SECONDARY }}>Full Stack Developer</div>
+              <p className="text-lg mb-3" style={{ color: COLORS.TEXT_SECONDARY }}>React.js • React Native • Node.js • FastAPI</p>
+              <p className="mb-6 leading-relaxed max-w-2xl" style={{ color: COLORS.TEXT_SECONDARY }}>
+                I build end-to-end web and mobile applications with clean UI, scalable architecture, and real-world business workflows.
+              </p>
+              <div className="flex flex-wrap gap-4 mb-6">
+                <button
+                  onClick={() => scrollToSection('projects')}
+                  className="group px-8 py-4 rounded-full font-semibold flex items-center space-x-2 transition-all hover:scale-105 cursor-pointer shadow-md"
+                  style={{ background: COLORS.GRADIENT_PRIMARY, boxShadow: `0 10px 40px ${COLORS.PRIMARY}50` }}
+                >
+                  <span>View My Work</span>
+                  <ChevronRight className="group-hover:translate-x-1 transition-transform" size={20} />
+                </button>
+                <a
+                  href={Charulatha_CV}
+                  download="Charulatha_CV.pdf"
+                  className="group px-8 py-4 rounded-full font-semibold border-2 transition-all hover:scale-105 flex items-center space-x-2 cursor-pointer shadow-lg hover:shadow-purple-500/20"
+                  style={{ borderColor: COLORS.PRIMARY, color: COLORS.PRIMARY_LIGHT }}
+                >
+                  <Download size={20} className="group-hover:translate-y-0.5 transition-transform" />
+                  <span>Download CV</span>
+                </a>
+                <button
+                  onClick={() => scrollToSection('contact')}
+                  className="px-8 py-4 rounded-full font-semibold border border-white/10 transition-all hover:scale-105 cursor-pointer"
+                  style={{ backgroundColor: COLORS.BG_HOVER }}
+                >
+                  Get In Touch
+                </button>
+              </div>
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="flex items-center space-x-2"><MapPin size={16} style={{ color: COLORS.PRIMARY }} /><span style={{ color: COLORS.TEXT_SECONDARY }}>Coimbatore, TN</span></div>
+                <div className="flex items-center space-x-2"><Zap size={16} style={{ color: COLORS.PRIMARY }} /><span style={{ color: COLORS.TEXT_SECONDARY }}>Open to Relocate</span></div>
               </div>
             </div>
-            <div className="absolute -top-8 -right-8 backdrop-blur-xl border rounded-2xl p-4 animate-bounce" style={{ backgroundColor: COLORS.BG_CARD, borderColor: COLORS.BORDER_DEFAULT }}>
-              <Code style={{ color: COLORS.PRIMARY }} size={28} className="mb-1" />
-              <div className="text-sm font-semibold">Clean Code</div>
+          </ScrollReveal>
+
+          <ScrollReveal direction="right">
+            <div className="relative flex justify-center">
+              <div className="relative">
+                <div className="absolute inset-0 rounded-[48px] blur-3xl opacity-50 animate-pulse" style={{ background: COLORS.GRADIENT_PRIMARY }} />
+                <div className="relative w-[360px] h-[460px] rounded-[48px] p-1 overflow-hidden shadow-2xl transition-all duration-300 hover:shadow-purple-500/20" style={{ background: COLORS.GRADIENT_PRIMARY }}>
+                  <img
+                    src={Charu_Profile}
+                    alt="Charulatha - Profile"
+                    className="w-full h-full rounded-[44px] object-cover object-top transition-transform duration-500 hover:scale-105"
+                    style={{ backgroundColor: COLORS.BG_DARK }}
+                  />
+                </div>
+                <div className="absolute -top-6 -right-6 backdrop-blur-xl border rounded-2xl p-4 shadow-lg animate-bounce" style={{ backgroundColor: COLORS.BG_CARD, borderColor: COLORS.BORDER_DEFAULT }}>
+                  <Code style={{ color: COLORS.PRIMARY }} size={28} className="mb-1" />
+                  <div className="text-sm font-semibold">Clean Code</div>
+                </div>
+                <div className="absolute -bottom-6 -left-6 backdrop-blur-xl border rounded-2xl p-4 shadow-lg" style={{ backgroundColor: COLORS.BG_CARD, borderColor: COLORS.BORDER_DEFAULT }}>
+                  <Heart style={{ color: COLORS.SECONDARY }} size={28} className="mb-1" />
+                  <div className="text-sm font-semibold">Pixel Perfect</div>
+                </div>
+              </div>
             </div>
-            <div className="absolute -bottom-8 -left-8 backdrop-blur-xl border rounded-2xl p-4" style={{ backgroundColor: COLORS.BG_CARD, borderColor: COLORS.BORDER_DEFAULT }}>
-              <Heart style={{ color: COLORS.SECONDARY }} size={28} className="mb-1" />
-              <div className="text-sm font-semibold">Pixel Perfect</div>
-            </div>
+          </ScrollReveal>
+        </div>
+
+        <ScrollReveal direction="up" delay={200}>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12">
+            {stats.map((stat, i) => (
+              <div key={i} className="group backdrop-blur-xl rounded-2xl p-5 border transition-all hover:scale-105" style={{ backgroundColor: COLORS.BG_CARD, borderColor: COLORS.BORDER_DEFAULT }}>
+                <div className="mb-2 transition-transform duration-300 group-hover:scale-110" style={{ color: COLORS.PRIMARY }}>{stat.icon}</div>
+                <div className="text-3xl font-black mb-1">{stat.value}</div>
+                <div className="text-sm" style={{ color: COLORS.TEXT_SECONDARY }}>{stat.label}</div>
+              </div>
+            ))}
           </div>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12">
-          {stats.map((stat, i) => (
-            <div key={i} className="group backdrop-blur-xl rounded-2xl p-5 border transition-all hover:scale-105" style={{ backgroundColor: COLORS.BG_CARD, borderColor: COLORS.BORDER_DEFAULT }}>
-              <div className="mb-2" style={{ color: COLORS.PRIMARY }}>{stat.icon}</div>
-              <div className="text-3xl font-black mb-1">{stat.value}</div>
-              <div className="text-sm" style={{ color: COLORS.TEXT_SECONDARY }}>{stat.label}</div>
-            </div>
-          ))}
-        </div>
+        </ScrollReveal>
       </div>
     </section>
   );
@@ -224,56 +322,62 @@ const AboutSection = () => {
   return (
     <section id="about" className="relative py-20 px-6" style={{ backgroundColor: COLORS.BG_CARD }}>
       <div className="max-w-7xl mx-auto relative z-10">
-        <div className="text-center mb-10">
-          <h2 className="text-5xl md:text-6xl font-black mb-4">
-            <span>About </span>
-            <span className="bg-clip-text text-transparent" style={{ backgroundImage: COLORS.GRADIENT_PRIMARY }}>Me</span>
-          </h2>
-          <p className="text-xl max-w-3xl mx-auto" style={{ color: COLORS.TEXT_SECONDARY }}>
-            Passionate Full Stack Developer with expertise in healthcare systems, job portals, enterprise dashboards, and mobile applications.
-          </p>
-        </div>
+        <ScrollReveal direction="up">
+          <div className="text-center mb-10">
+            <h2 className="text-5xl md:text-6xl font-black mb-4">
+              <span>About </span>
+              <span className="bg-clip-text text-transparent" style={{ backgroundImage: COLORS.GRADIENT_PRIMARY }}>Me</span>
+            </h2>
+            <p className="text-xl max-w-3xl mx-auto" style={{ color: COLORS.TEXT_SECONDARY }}>
+              Passionate Full Stack Developer with expertise in healthcare systems, job portals, enterprise dashboards, and mobile applications.
+            </p>
+          </div>
+        </ScrollReveal>
         <div className="grid lg:grid-cols-2 gap-8 items-start">
-          <div className="space-y-6">
-            <div className="backdrop-blur-xl rounded-3xl p-6 border" style={{ backgroundColor: COLORS.BG_CARD, borderColor: COLORS.BORDER_DEFAULT }}>
-              <h3 className="text-2xl font-bold mb-4 flex items-center space-x-3"><MapPin style={{ color: COLORS.PRIMARY }} /><span>Location & Availability</span></h3>
-              <div className="space-y-3">
-                {locationData.map((item, i) => (
-                  <div key={i} className="flex justify-between items-center p-3 rounded-xl" style={{ backgroundColor: `${COLORS.PRIMARY}0D` }}>
-                    <span style={{ color: COLORS.TEXT_SECONDARY }}>{item.label}:</span>
-                    <span className="font-semibold">{item.value}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="backdrop-blur-xl rounded-3xl p-6 border" style={{ backgroundColor: COLORS.BG_CARD, borderColor: COLORS.BORDER_DEFAULT }}>
-              <h3 className="text-2xl font-bold mb-4">What I Love</h3>
-              <div className="space-y-2">
-                {whatILove.map((item, i) => (
-                  <div key={i} className="flex items-center space-x-3 p-3 rounded-lg" style={{ backgroundColor: `${COLORS.PRIMARY}0D` }}>
-                    <div className="w-2 h-2 rounded-full" style={{ background: COLORS.GRADIENT_PRIMARY }} />
-                    <span style={{ color: COLORS.TEXT_SECONDARY }}>{item}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-          <div className="backdrop-blur-xl rounded-3xl p-6 border" style={{ background: `linear-gradient(135deg, ${COLORS.PRIMARY}1A, ${COLORS.SECONDARY}1A)`, borderColor: COLORS.BORDER_PURPLE }}>
-            <h3 className="text-3xl font-bold mb-4">Who Am I?</h3>
-            <div className="space-y-3" style={{ color: COLORS.TEXT_SECONDARY }}>
-              <p className="leading-relaxed text-lg">I'm a passionate full-stack developer who loves creating seamless digital experiences across web and mobile.</p>
-              <p className="leading-relaxed text-lg">My approach combines technical proficiency with creative problem-solving, ensuring every project exceeds expectations.</p>
-              <p className="leading-relaxed text-lg">I have successfully built healthcare enterprise systems, job portals, mobile apps, and enterprise HR platforms.</p>
-            </div>
-            <div className="grid grid-cols-2 gap-3 mt-6">
-              {[{ label: 'Clean Code', value: '100%' }, { label: 'Best Practices', value: '100%' }, { label: 'Performance', value: '98%' }, { label: 'Security', value: '99%' }].map((stat, i) => (
-                <div key={i} className="backdrop-blur-xl rounded-xl p-3 border" style={{ backgroundColor: COLORS.BG_CARD, borderColor: COLORS.BORDER_DEFAULT }}>
-                  <div className="text-2xl font-black mb-1" style={{ color: COLORS.PRIMARY }}>{stat.value}</div>
-                  <div className="text-sm" style={{ color: COLORS.TEXT_SECONDARY }}>{stat.label}</div>
+          <ScrollReveal direction="left" delay={150}>
+            <div className="space-y-6">
+              <div className="backdrop-blur-xl rounded-3xl p-6 border" style={{ backgroundColor: COLORS.BG_CARD, borderColor: COLORS.BORDER_DEFAULT }}>
+                <h3 className="text-2xl font-bold mb-4 flex items-center space-x-3"><MapPin style={{ color: COLORS.PRIMARY }} /><span>Location & Availability</span></h3>
+                <div className="space-y-3">
+                  {locationData.map((item, i) => (
+                    <div key={i} className="flex justify-between items-center p-3 rounded-xl" style={{ backgroundColor: `${COLORS.PRIMARY}0D` }}>
+                      <span style={{ color: COLORS.TEXT_SECONDARY }}>{item.label}:</span>
+                      <span className="font-semibold">{item.value}</span>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
+              <div className="backdrop-blur-xl rounded-3xl p-6 border" style={{ backgroundColor: COLORS.BG_CARD, borderColor: COLORS.BORDER_DEFAULT }}>
+                <h3 className="text-2xl font-bold mb-4">What I Love</h3>
+                <div className="space-y-2">
+                  {whatILove.map((item, i) => (
+                    <div key={i} className="flex items-center space-x-3 p-3 rounded-lg" style={{ backgroundColor: `${COLORS.PRIMARY}0D` }}>
+                      <div className="w-2 h-2 rounded-full" style={{ background: COLORS.GRADIENT_PRIMARY }} />
+                      <span style={{ color: COLORS.TEXT_SECONDARY }}>{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-          </div>
+          </ScrollReveal>
+          <ScrollReveal direction="right" delay={300}>
+            <div className="backdrop-blur-xl rounded-3xl p-6 border h-full" style={{ background: `linear-gradient(135deg, ${COLORS.PRIMARY}1A, ${COLORS.SECONDARY}1A)`, borderColor: COLORS.BORDER_PURPLE }}>
+              <h3 className="text-3xl font-bold mb-4">Who Am I?</h3>
+              <div className="space-y-3" style={{ color: COLORS.TEXT_SECONDARY }}>
+                <p className="leading-relaxed text-lg">I'm a passionate full-stack developer who loves creating seamless digital experiences across web and mobile.</p>
+                <p className="leading-relaxed text-lg">My approach combines technical proficiency with creative problem-solving, ensuring every project exceeds expectations.</p>
+                <p className="leading-relaxed text-lg">I have successfully built healthcare enterprise systems, job portals, mobile apps, and enterprise HR platforms.</p>
+              </div>
+              <div className="grid grid-cols-2 gap-3 mt-6">
+                {[{ label: 'Clean Code', value: '100%' }, { label: 'Best Practices', value: '100%' }, { label: 'Performance', value: '98%' }, { label: 'Security', value: '99%' }].map((stat, i) => (
+                  <div key={i} className="backdrop-blur-xl rounded-xl p-3 border hover:border-purple-500/30 transition-all duration-300" style={{ backgroundColor: COLORS.BG_CARD, borderColor: COLORS.BORDER_DEFAULT }}>
+                    <div className="text-2xl font-black mb-1" style={{ color: COLORS.PRIMARY }}>{stat.value}</div>
+                    <div className="text-sm" style={{ color: COLORS.TEXT_SECONDARY }}>{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </ScrollReveal>
         </div>
       </div>
     </section>
@@ -292,24 +396,28 @@ const PhilosophySection = () => {
   return (
     <section className="relative py-14 px-6">
       <div className="max-w-7xl mx-auto relative z-10">
-        <div className="text-center mb-8">
-          <h3 className="text-4xl font-bold mb-3"><span>Development </span><span className="bg-clip-text text-transparent" style={{ backgroundImage: COLORS.GRADIENT_PRIMARY }}>Philosophy</span></h3>
-          <p style={{ color: COLORS.TEXT_SECONDARY }}>The principles that guide my development approach</p>
-        </div>
+        <ScrollReveal direction="up">
+          <div className="text-center mb-8">
+            <h3 className="text-4xl font-bold mb-3"><span>Development </span><span className="bg-clip-text text-transparent" style={{ backgroundImage: COLORS.GRADIENT_PRIMARY }}>Philosophy</span></h3>
+            <p style={{ color: COLORS.TEXT_SECONDARY }}>The principles that guide my development approach</p>
+          </div>
+        </ScrollReveal>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {philosophy.map((item, i) => (
-            <div key={i} className="group backdrop-blur-xl rounded-2xl p-5 border transition-all hover:scale-105" style={{ backgroundColor: COLORS.BG_CARD, borderColor: COLORS.BORDER_DEFAULT }}
-              onMouseEnter={(e) => { e.currentTarget.style.borderColor = item.color; }}
-              onMouseLeave={(e) => { e.currentTarget.style.borderColor = COLORS.BORDER_DEFAULT; }}
-            >
-              <div className="flex items-start space-x-4">
-                <div className="text-4xl transform transition-transform group-hover:scale-125 group-hover:rotate-12">{item.icon}</div>
-                <div>
-                  <h4 className="text-xl font-bold mb-1">{item.title}</h4>
-                  <p style={{ color: COLORS.TEXT_SECONDARY }}>{item.desc}</p>
+            <ScrollReveal key={i} direction="up" delay={i * 100}>
+              <div className="group backdrop-blur-xl rounded-2xl p-5 border transition-all duration-300 hover:scale-105 h-full" style={{ backgroundColor: COLORS.BG_CARD, borderColor: COLORS.BORDER_DEFAULT }}
+                onMouseEnter={(e) => { e.currentTarget.style.borderColor = item.color; }}
+                onMouseLeave={(e) => { e.currentTarget.style.borderColor = COLORS.BORDER_DEFAULT; }}
+              >
+                <div className="flex items-start space-x-4">
+                  <div className="text-4xl transform transition-transform group-hover:scale-125 group-hover:rotate-12">{item.icon}</div>
+                  <div>
+                    <h4 className="text-xl font-bold mb-1">{item.title}</h4>
+                    <p style={{ color: COLORS.TEXT_SECONDARY }}>{item.desc}</p>
+                  </div>
                 </div>
               </div>
-            </div>
+            </ScrollReveal>
           ))}
         </div>
       </div>
@@ -327,60 +435,77 @@ const SkillsSection = () => {
   return (
     <section id="skills" className="relative py-20 px-6">
       <div className="max-w-7xl mx-auto relative z-10">
-        <div className="text-center mb-10">
-          <h2 className="text-5xl md:text-6xl font-black mb-4"><span>Technical </span><span className="bg-clip-text text-transparent" style={{ backgroundImage: COLORS.GRADIENT_PRIMARY }}>Skills</span></h2>
-        </div>
+        <ScrollReveal direction="up">
+          <div className="text-center mb-10">
+            <h2 className="text-5xl md:text-6xl font-black mb-4"><span>Technical </span><span className="bg-clip-text text-transparent" style={{ backgroundImage: COLORS.GRADIENT_PRIMARY }}>Skills</span></h2>
+          </div>
+        </ScrollReveal>
+        
         <div className="grid lg:grid-cols-3 gap-6 mb-6">
-          <div className="backdrop-blur-xl rounded-3xl p-6 border" style={{ backgroundColor: COLORS.BG_CARD, borderColor: COLORS.BORDER_DEFAULT }}>
-            <div className="flex items-center space-x-3 mb-6"><Code style={{ color: COLORS.PRIMARY }} size={28} /><h3 className="text-2xl font-bold">Frontend</h3></div>
-            <div className="space-y-4">
-              {frontend.map((skill, i) => (
-                <div key={i}>
-                  <div className="flex items-center justify-between mb-2"><span className="font-semibold">{skill.icon} {skill.name}</span><span className="font-bold" style={{ color: COLORS.PRIMARY }}>{skill.level}%</span></div>
-                  <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: COLORS.BG_HOVER }}><div className="h-full rounded-full transition-all duration-1000" style={{ width: `${skill.level}%`, background: COLORS.GRADIENT_PRIMARY }} /></div>
-                </div>
-              ))}
+          <ScrollReveal direction="left" delay={100}>
+            <div className="backdrop-blur-xl rounded-3xl p-6 border h-full hover:border-purple-500/30 transition-colors duration-300" style={{ backgroundColor: COLORS.BG_CARD, borderColor: COLORS.BORDER_DEFAULT }}>
+              <div className="flex items-center space-x-3 mb-6"><Code style={{ color: COLORS.PRIMARY }} size={28} /><h3 className="text-2xl font-bold">Frontend</h3></div>
+              <div className="space-y-4">
+                {frontend.map((skill, i) => (
+                  <div key={i}>
+                    <div className="flex items-center justify-between mb-2"><span className="font-semibold">{skill.icon} {skill.name}</span><span className="font-bold" style={{ color: COLORS.PRIMARY }}>{skill.level}%</span></div>
+                    <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: COLORS.BG_HOVER }}><div className="h-full rounded-full transition-all duration-[1500ms]" style={{ width: `${skill.level}%`, background: COLORS.GRADIENT_PRIMARY }} /></div>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-          <div className="backdrop-blur-xl rounded-3xl p-6 border" style={{ backgroundColor: COLORS.BG_CARD, borderColor: COLORS.BORDER_DEFAULT }}>
-            <div className="flex items-center space-x-3 mb-6"><Server style={{ color: COLORS.ACCENT_GREEN }} size={28} /><h3 className="text-2xl font-bold">Backend</h3></div>
-            <div className="space-y-4">
-              {backend.map((skill, i) => (
-                <div key={i}>
-                  <div className="flex items-center justify-between mb-2"><span className="font-semibold">{skill.icon} {skill.name}</span><span className="font-bold" style={{ color: COLORS.ACCENT_GREEN }}>{skill.level}%</span></div>
-                  <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: COLORS.BG_HOVER }}><div className="h-full rounded-full transition-all duration-1000" style={{ width: `${skill.level}%`, background: COLORS.GRADIENT_GREEN }} /></div>
-                </div>
-              ))}
+          </ScrollReveal>
+          
+          <ScrollReveal direction="up" delay={200}>
+            <div className="backdrop-blur-xl rounded-3xl p-6 border h-full hover:border-green-500/30 transition-colors duration-300" style={{ backgroundColor: COLORS.BG_CARD, borderColor: COLORS.BORDER_DEFAULT }}>
+              <div className="flex items-center space-x-3 mb-6"><Server style={{ color: COLORS.ACCENT_GREEN }} size={28} /><h3 className="text-2xl font-bold">Backend</h3></div>
+              <div className="space-y-4">
+                {backend.map((skill, i) => (
+                  <div key={i}>
+                    <div className="flex items-center justify-between mb-2"><span className="font-semibold">{skill.icon} {skill.name}</span><span className="font-bold" style={{ color: COLORS.ACCENT_GREEN }}>{skill.level}%</span></div>
+                    <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: COLORS.BG_HOVER }}><div className="h-full rounded-full transition-all duration-[1500ms]" style={{ width: `${skill.level}%`, background: COLORS.GRADIENT_GREEN }} /></div>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          </ScrollReveal>
+          
           <div className="space-y-6">
-            <div className="backdrop-blur-xl rounded-3xl p-6 border" style={{ backgroundColor: COLORS.BG_CARD, borderColor: COLORS.BORDER_DEFAULT }}>
-              <div className="flex items-center space-x-3 mb-4"><Database style={{ color: COLORS.ACCENT_CYAN }} size={28} /><h3 className="text-2xl font-bold">Tools</h3></div>
-              <div className="grid grid-cols-2 gap-2">
-                {tools.map((tool, i) => (<div key={i} className="rounded-lg p-2.5 border text-sm font-semibold text-center" style={{ backgroundColor: COLORS.BG_HOVER, borderColor: COLORS.BORDER_DEFAULT }}>{tool}</div>))}
+            <ScrollReveal direction="right" delay={300}>
+              <div className="backdrop-blur-xl rounded-3xl p-6 border hover:border-cyan-500/30 transition-colors duration-300" style={{ backgroundColor: COLORS.BG_CARD, borderColor: COLORS.BORDER_DEFAULT }}>
+                <div className="flex items-center space-x-3 mb-4"><Database style={{ color: COLORS.ACCENT_CYAN }} size={28} /><h3 className="text-2xl font-bold">Tools</h3></div>
+                <div className="grid grid-cols-2 gap-2">
+                  {tools.map((tool, i) => (<div key={i} className="rounded-lg p-2.5 border text-sm font-semibold text-center hover:bg-white/5 transition-colors duration-300" style={{ backgroundColor: COLORS.BG_HOVER, borderColor: COLORS.BORDER_DEFAULT }}>{tool}</div>))}
+                </div>
               </div>
-            </div>
-            <div className="backdrop-blur-xl rounded-3xl p-6 border" style={{ backgroundColor: COLORS.BG_CARD, borderColor: COLORS.BORDER_DEFAULT }}>
-              <div className="flex items-center space-x-3 mb-4"><Users style={{ color: COLORS.ACCENT_ORANGE }} size={28} /><h3 className="text-2xl font-bold">Soft Skills</h3></div>
-              <div className="space-y-2">
-                {softSkills.map((skill, i) => (<div key={i} className="flex items-center space-x-3 p-2.5 rounded-lg" style={{ backgroundColor: `${COLORS.ACCENT_ORANGE}1A` }}><Star size={16} style={{ color: '#fbbf24' }} fill="#fbbf24" /><span style={{ color: COLORS.TEXT_SECONDARY }}>{skill}</span></div>))}
+            </ScrollReveal>
+            
+            <ScrollReveal direction="right" delay={400}>
+              <div className="backdrop-blur-xl rounded-3xl p-6 border hover:border-orange-500/30 transition-colors duration-300" style={{ backgroundColor: COLORS.BG_CARD, borderColor: COLORS.BORDER_DEFAULT }}>
+                <div className="flex items-center space-x-3 mb-4"><Users style={{ color: COLORS.ACCENT_ORANGE }} size={28} /><h3 className="text-2xl font-bold">Soft Skills</h3></div>
+                <div className="space-y-2">
+                  {softSkills.map((skill, i) => (<div key={i} className="flex items-center space-x-3 p-2.5 rounded-lg hover:translate-x-1 transition-transform duration-300" style={{ backgroundColor: `${COLORS.ACCENT_ORANGE}1A` }}><Star size={16} style={{ color: '#fbbf24' }} fill="#fbbf24" /><span style={{ color: COLORS.TEXT_SECONDARY }}>{skill}</span></div>))}
+                </div>
               </div>
-            </div>
+            </ScrollReveal>
           </div>
         </div>
-        <div className="backdrop-blur-xl rounded-3xl p-6 border" style={{ background: `linear-gradient(135deg, ${COLORS.ACCENT_ORANGE}1A, ${COLORS.PRIMARY}1A)`, borderColor: COLORS.BORDER_PURPLE }}>
-          <div className="flex items-center space-x-3 mb-4"><Rocket style={{ color: COLORS.ACCENT_ORANGE }} size={28} /><h3 className="text-2xl font-bold">Cloud & Deployment (AWS)</h3></div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {cloudDeploy.map((item, i) => (<div key={i} className="rounded-lg p-3 border text-sm font-semibold text-center transition-all hover:scale-105" style={{ backgroundColor: COLORS.BG_HOVER, borderColor: COLORS.BORDER_DEFAULT }}>{item}</div>))}
+
+        <ScrollReveal direction="up" delay={500}>
+          <div className="backdrop-blur-xl rounded-3xl p-6 border hover:border-purple-500/30 transition-all duration-300" style={{ background: `linear-gradient(135deg, ${COLORS.ACCENT_ORANGE}1A, ${COLORS.PRIMARY}1A)`, borderColor: COLORS.BORDER_PURPLE }}>
+            <div className="flex items-center space-x-3 mb-4"><Rocket style={{ color: COLORS.ACCENT_ORANGE }} size={28} /><h3 className="text-2xl font-bold">Cloud & Deployment (AWS)</h3></div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {cloudDeploy.map((item, i) => (<div key={i} className="rounded-lg p-3 border text-sm font-semibold text-center transition-all hover:scale-105 hover:bg-white/5" style={{ backgroundColor: COLORS.BG_HOVER, borderColor: COLORS.BORDER_DEFAULT }}>{item}</div>))}
+            </div>
           </div>
-        </div>
+        </ScrollReveal>
       </div>
     </section>
   );
 };
 
 const ProjectsSection = () => {
-  const [expandedProject, setExpandedProject] = useState(0);
+  const [expandedProject, setExpandedProject] = useState(null);
 
   const projects = [
     {
@@ -485,67 +610,110 @@ const ProjectsSection = () => {
   return (
     <section id="projects" className="relative py-20 px-6" style={{ backgroundColor: COLORS.BG_CARD }}>
       <div className="max-w-7xl mx-auto relative z-10">
-        <div className="text-center mb-10">
-          <h2 className="text-5xl md:text-6xl font-black mb-4"><span>Featured </span><span className="bg-clip-text text-transparent" style={{ backgroundImage: COLORS.GRADIENT_PRIMARY }}>Projects</span></h2>
-          <p className="text-xl" style={{ color: COLORS.TEXT_SECONDARY }}>7 Major Projects Delivered — click any project to see the full scope of work</p>
-        </div>
+        <ScrollReveal direction="up">
+          <div className="text-center mb-10">
+            <h2 className="text-5xl md:text-6xl font-black mb-4"><span>Featured </span><span className="bg-clip-text text-transparent" style={{ backgroundImage: COLORS.GRADIENT_PRIMARY }}>Projects</span></h2>
+            <p className="text-xl" style={{ color: COLORS.TEXT_SECONDARY }}>7 Major Projects Delivered — click any project to see the full scope of work</p>
+          </div>
+        </ScrollReveal>
 
         <div className="space-y-5">
           {projects.map((project, i) => {
             const isOpen = expandedProject === i;
             return (
-              <div key={i} className="backdrop-blur-xl rounded-3xl overflow-hidden border transition-all" style={{ backgroundColor: COLORS.BG_CARD, borderColor: isOpen ? COLORS.BORDER_HOVER : COLORS.BORDER_DEFAULT }}>
-                <div className="p-6 md:p-8 cursor-pointer" onClick={() => setExpandedProject(isOpen ? -1 : i)}>
-                  <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-                    <div className="flex-1">
-                      <div className="inline-block px-4 py-1.5 rounded-full text-sm font-semibold mb-3 border" style={{ backgroundColor: `${COLORS.PRIMARY}33`, borderColor: COLORS.BORDER_PURPLE, color: COLORS.PRIMARY }}>{project.category}</div>
-                      <div className="flex items-center space-x-4 mb-3"><span className="text-5xl">{project.icon}</span><div><h3 className="text-3xl font-black">{project.title}</h3><p className="text-sm" style={{ color: COLORS.TEXT_MUTED }}>{project.role}</p></div></div>
-                      <p className="leading-relaxed text-lg mb-4" style={{ color: COLORS.TEXT_SECONDARY }}>{project.description}</p>
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {project.tech.map((tech, j) => (<span key={j} className="px-3 py-1.5 rounded-lg text-sm font-mono border" style={{ backgroundColor: COLORS.BG_HOVER, borderColor: COLORS.BORDER_DEFAULT }}>{tech}</span>))}
-                      </div>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                        {project.metrics.map((m, j) => (
-                          <div key={j} className="rounded-xl p-3 border text-center" style={{ backgroundColor: 'rgba(0,0,0,0.35)', borderColor: COLORS.PRIMARY_LIGHT + '55' }}>
-                            <div className="text-lg font-black" style={{ color: COLORS.TEXT_PRIMARY }}>{m.value}</div>
-                            <div className="text-xs font-semibold" style={{ color: COLORS.PRIMARY_LIGHT }}>{m.label}</div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    <button
-                      className="flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-full font-semibold text-sm self-start"
-                      style={{ background: isOpen ? COLORS.GRADIENT_PRIMARY : COLORS.BG_HOVER, border: `1px solid ${COLORS.BORDER_DEFAULT}` }}
-                    >
-                      {isOpen ? 'Hide Full Details' : 'See Full Scope of Work'}
-                      <ChevronRight size={16} style={{ transform: isOpen ? 'rotate(90deg)' : 'none', transition: 'transform 0.2s' }} />
-                    </button>
-                  </div>
-                </div>
-
-                {isOpen && (
-                  <div className="px-6 md:px-8 pb-8 pt-2 border-t" style={{ borderTopColor: COLORS.BORDER_DEFAULT }}>
-                    <div className="grid md:grid-cols-2 gap-4 mt-6">
-                      {project.categories.map((cat, ci) => (
-                        <div key={ci} className="rounded-2xl p-5 border" style={{ backgroundColor: `${cat.color}0D`, borderColor: `${cat.color}33` }}>
-                          <h4 className="font-bold mb-3 flex items-center gap-2" style={{ color: cat.color }}>
-                            <span className="text-2xl">{cat.icon}</span>
-                            <span>{cat.name}</span>
-                          </h4>
-                          <div className="space-y-2">
-                            {cat.items.map((item, ii) => (
-                              <div key={ii} className="flex items-start space-x-2">
-                                <ChevronRight size={14} className="flex-shrink-0 mt-1" style={{ color: cat.color }} />
-                                <span className="text-sm leading-relaxed" style={{ color: COLORS.TEXT_SECONDARY }}>{item}</span>
-                              </div>
-                            ))}
+              <ScrollReveal key={i} direction="up" delay={i * 80}>
+                <div
+                  className={`backdrop-blur-xl rounded-3xl overflow-hidden border transition-all duration-300 ${isOpen ? 'shadow-[0_0_30px_rgba(168,85,247,0.15)]' : ''
+                    }`}
+                  style={{
+                    backgroundColor: COLORS.BG_CARD,
+                    borderColor: isOpen ? COLORS.BORDER_HOVER : COLORS.BORDER_DEFAULT,
+                  }}
+                >
+                  <div
+                    className="p-6 md:p-8 cursor-pointer group"
+                    onClick={() => setExpandedProject(isOpen ? null : i)}
+                  >
+                    <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+                      <div className="flex-1">
+                        <div className="inline-block px-4 py-1.5 rounded-full text-sm font-semibold mb-3 border" style={{ backgroundColor: `${COLORS.PRIMARY}33`, borderColor: COLORS.BORDER_PURPLE, color: COLORS.PRIMARY }}>{project.category}</div>
+                        <div className="flex items-center space-x-4 mb-3">
+                          <span className="text-5xl transform transition-transform duration-300 group-hover:scale-110 inline-block">{project.icon}</span>
+                          <div>
+                            <h3 className="text-3xl font-black group-hover:text-purple-300 transition-colors duration-200">{project.title}</h3>
+                            <p className="text-sm" style={{ color: COLORS.TEXT_MUTED }}>{project.role}</p>
                           </div>
                         </div>
-                      ))}
+                        <p className="leading-relaxed text-lg mb-4" style={{ color: COLORS.TEXT_SECONDARY }}>{project.description}</p>
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          {project.tech.map((tech, j) => (<span key={j} className="px-3 py-1.5 rounded-lg text-sm font-mono border" style={{ backgroundColor: COLORS.BG_HOVER, borderColor: COLORS.BORDER_DEFAULT }}>{tech}</span>))}
+                        </div>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                          {project.metrics.map((m, j) => (
+                            <div key={j} className="rounded-xl p-3 border text-center transition-transform duration-200 group-hover:border-purple-500/30" style={{ backgroundColor: 'rgba(0,0,0,0.35)', borderColor: COLORS.PRIMARY_LIGHT + '55' }}>
+                              <div className="text-lg font-black" style={{ color: COLORS.TEXT_PRIMARY }}>{m.value}</div>
+                              <div className="text-xs font-semibold" style={{ color: COLORS.PRIMARY_LIGHT }}>{m.label}</div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setExpandedProject(isOpen ? null : i);
+                        }}
+                        className={`flex-shrink-0 flex items-center gap-2.5 px-6 py-3 rounded-full font-semibold text-sm self-start transition-all duration-300 transform active:scale-95 shadow-md cursor-pointer ${isOpen
+                          ? 'scale-105 shadow-purple-500/30 shadow-lg'
+                          : 'hover:scale-105 hover:border-purple-500/50 hover:shadow-[0_0_20px_rgba(168,85,247,0.25)]'
+                          }`}
+                        style={{
+                          background: isOpen ? COLORS.GRADIENT_PRIMARY : COLORS.BG_HOVER,
+                          border: `1px solid ${isOpen ? COLORS.PRIMARY : COLORS.BORDER_DEFAULT}`,
+                        }}
+                      >
+                        <span>{isOpen ? 'Hide Full Details' : 'See Full Scope of Work'}</span>
+                        <ChevronRight
+                          size={18}
+                          className={`transition-transform duration-300 ease-out ${isOpen ? 'rotate-90 text-white' : 'group-hover:translate-x-1'
+                            }`}
+                        />
+                      </button>
                     </div>
                   </div>
-                )}
-              </div>
+
+                  <div
+                    className={`grid transition-all duration-500 ease-in-out ${isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+                      }`}
+                  >
+                    <div className="overflow-hidden">
+                      <div className="px-6 md:px-8 pb-8 pt-4 border-t transition-colors duration-300" style={{ borderTopColor: COLORS.BORDER_DEFAULT }}>
+                        <div className="grid md:grid-cols-2 gap-4 mt-2">
+                          {project.categories.map((cat, ci) => (
+                            <div
+                              key={ci}
+                              className="rounded-2xl p-5 border transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg"
+                              style={{ backgroundColor: `${cat.color}0D`, borderColor: `${cat.color}33` }}
+                            >
+                              <h4 className="font-bold mb-3 flex items-center gap-2" style={{ color: cat.color }}>
+                                <span className="text-2xl">{cat.icon}</span>
+                                <span>{cat.name}</span>
+                              </h4>
+                              <div className="space-y-2">
+                                {cat.items.map((item, ii) => (
+                                  <div key={ii} className="flex items-start space-x-2">
+                                    <ChevronRight size={14} className="flex-shrink-0 mt-1" style={{ color: cat.color }} />
+                                    <span className="text-sm leading-relaxed" style={{ color: COLORS.TEXT_SECONDARY }}>{item}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ScrollReveal>
             );
           })}
         </div>
